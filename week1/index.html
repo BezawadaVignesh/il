@@ -1,19 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Week1</title>
-</head>
-<body>
-  <div id="games-area" class="games-area">
-  </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Week 1</title>
+    <link rel="stylesheet" href="/main.css" />
+  </head>
+  <body>
+    <div id="games-area" class="games-area"></div>
 
-  <script>
-    window.onload = async function() {
-        document.getElementById('games-area').innerHTML = 'Hi'
-        
-    };
-  </script>
-</body>
+    <script>
+      window.onload = async function () {
+        try {
+          const response = await fetch("/game");
+          const data = await response.json();
+          const games_area = document.getElementById("games-area");
+
+          data.forEach((element) => {
+            games_area.innerHTML += `<div class='game-card'><img class="card-img-top" width="262" height="148" loading="lazy" src="${element.thumbnail}" alt="${element.title}"><div class='game-card-body'><span class='badge badge-free float-right'>FREE</span><h4 >${element.title}</h4><p>${element.short_description}</p></div></div>`;
+          });
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          document.getElementById("user-container").innerText =
+            "Failed to load user data.";
+        }
+      };
+    </script>
+  </body>
 </html>
