@@ -7,24 +7,85 @@
     <link rel="stylesheet" href="/main.css" />
   </head>
   <body>
-    <div id="games-area" class="games-area"></div>
+    <div
+      style="
+        margin: auto;
+        width: 80%;
+        display: flex;
+        justify-content: space-evenly;
+        flex-wrap: wrap;
+        padding-block: 30px;
+        row-gap: 10px;
+      "
+    >
+      <div>
+        <label for="platform">Platform:</label>
+        <select id="platform" class="custom-select" onchange="load()">
+          <option value="" selected>All Platforms</option>
+          <option value="pc">Windows (PC)</option>
+          <option value="browser">Browser (Web)</option>
+        </select>
+      </div>
+      <div>
+        <label for="category">Category:</label>
+        <select id="category" class="custom-select" onchange="load()">
+          <option value="" selected>All Category</option>
+          <option value="MMO">MMO</option>
+          <option value="MMORPG">MMORPG</option>
+          <option value="shooter">Shooter</option>
+        </select>
+      </div>
+      <div>
+        <label for="sortby">Sort By:</label>
+        <select id="sort_by" class="custom-select" onchange="load()">
+          <option value="pc">Windows (PC)</option>
+          <option value="browser">Browser (Web)</option>
+          <option value="" selected>Any Order</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="games-area" class="games-area">
+      <div class="spinner-container"><div class="spinner"></div></div>
+    </div>
 
     <script>
-      window.onload = async function () {
+      const load = async function () {
+        function addParmTo(parms, parm) {
+          if (parms != "") {
+            parms += "&";
+          }
+          return parms + parm;
+        }
+        parms = "";
+        platform = document.getElementById("platform").value;
+        category = document.getElementById("category").value;
+        sort_by = document.getElementById("sort_by").value;
+        if (platform != "") parms = addParmTo(parms, `platform=${platform}`);
+        if (category != "") parms = addParmTo(parms, `category=${category}`);
+        if (sort_by != "") parms = addParmTo(parms, `sort_by=${sort_by}`);
         try {
-          const response = await fetch("/game");
+          const response = await fetch("/game?" + parms);
           const data = await response.json();
           const games_area = document.getElementById("games-area");
-
+          games_area.innerHTML = "";
           data.forEach((element) => {
-            games_area.innerHTML += `<div class='game-card'><img class="card-img-top" width="262" height="148" loading="lazy" src="${element.thumbnail}" alt="${element.title}"><div class='game-card-body'><span class='badge badge-free float-right'>FREE</span><h4 >${element.title}</h4><p>${element.short_description}</p></div></div>`;
+            games_area.innerHTML += `<div class='game-card'>
+                <img class="card-img-top" width="262" height="148" loading="lazy" src="${element.thumbnail}" alt="${element.title}">
+                <div class='game-card-body'>
+                  <span class='badge badge-free float-right'>FREE</span>
+                  <h4 >${element.title}</h4>
+                  <p>${element.short_description}</p>
+                </div>
+              </div>`;
           });
         } catch (error) {
           console.error("Error fetching user data:", error);
-          document.getElementById("user-container").innerText =
+          document.getElementById("games-area").innerText =
             "Failed to load user data.";
         }
       };
+      window.onload = load;
     </script>
   </body>
 </html>
