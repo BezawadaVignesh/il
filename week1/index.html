@@ -33,13 +33,21 @@
           <option value="MMO">MMO</option>
           <option value="MMORPG">MMORPG</option>
           <option value="shooter">Shooter</option>
+          <option value="strategy">Strategy</option>
+          <option value="moba">Moba</option>
+          <option value="social">Social</option>
+          <option value="sports">Sports</option>
+          <option value="survival">Survival</option>
+          <option value="pvp">pvp</option>
+          <option value="action">Action</option>
         </select>
       </div>
       <div>
         <label for="sortby">Sort By:</label>
         <select id="sort_by" class="custom-select" onchange="load()">
-          <option value="pc">Windows (PC)</option>
-          <option value="browser">Browser (Web)</option>
+          <option value="release-date">Release Date</option>
+          <option value="alphabetical">Alphabetical</option>
+          <option value="popularity">Popularity</option>
           <option value="" selected>Any Order</option>
         </select>
       </div>
@@ -69,16 +77,32 @@
           const data = await response.json();
           const games_area = document.getElementById("games-area");
           games_area.innerHTML = "";
-          data.forEach((element) => {
-            games_area.innerHTML += `<div class='game-card'>
-                <img class="card-img-top" width="262" height="148" loading="lazy" src="${element.thumbnail}" alt="${element.title}">
-                <div class='game-card-body'>
-                  <span class='badge badge-free float-right'>FREE</span>
-                  <h4 >${element.title}</h4>
-                  <p>${element.short_description}</p>
-                </div>
+          let index = 0;
+          function processChunk() {
+            const chunkSize = 10;
+            for (
+              let i = 0;
+              i < chunkSize && index < data.length;
+              i++, index++
+            ) {
+              const element = data[index];
+              games_area.innerHTML += `<div class='game-card'>
+                <a href='${element.game_url}' style='color: inherit;text-decoration: none;'>
+                    <img class="card-img-top" width="262" height="148" loading="lazy" src="${element.thumbnail}" alt="${element.title}">
+                    <div class='game-card-body'>
+                    <span class='badge badge-free float-right'>FREE</span>
+                    <h4 >${element.title}</h4>
+                    <p>${element.short_description}</p>
+                  </div>
+                </a>
               </div>`;
-          });
+            }
+
+            if (index < data.length) {
+              setTimeout(processChunk, 0); // Schedule the next chunk without blocking
+            }
+          }
+          processChunk();
         } catch (error) {
           console.error("Error fetching user data:", error);
           document.getElementById("games-area").innerText =
