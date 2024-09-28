@@ -7,6 +7,7 @@
     "week1": "node week1/index.js",
     "week2": "cd .\\week2\\ && gradlew.bat test && cd ..",
     "week3": "cd week3 && vite",
+    "week4": "cd week4 && vite",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -16,8 +17,10 @@
   "dependencies": {
     "antd": "^5.20.6",
     "axios": "^1.7.7",
+    "chess.js": "^1.0.0-beta.8",
     "jwt-decode": "^4.0.0",
     "react": "^18.3.1",
+    "react-chessboard": "^4.7.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2",
     "styled-components": "^6.1.13"
