@@ -8,6 +8,7 @@
     "week2": "cd .\\week2\\ && gradlew.bat test && cd ..",
     "week3": "cd week3 && vite",
     "week4": "cd week4 && vite",
+    "week5": "cd week5 && vite",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,6 +20,7 @@
     "axios": "^1.7.7",
     "chess.js": "^1.0.0-beta.8",
     "jwt-decode": "^4.0.0",
+    "moment": "^2.30.1",
     "react": "^18.3.1",
     "react-chessboard": "^4.7.1",
     "react-dom": "^18.3.1",
