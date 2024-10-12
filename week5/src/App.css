@@ -1,0 +1,12 @@
+#root {
+  margin: 0;
+  padding: 0;
+}
+
+.ant-carousel .slick-dots li button {
+  background-color: red; /* Change the dot color */
+}
+
+.ant-carousel .slick-dots li.slick-active button {
+  background-color: green; /* Change the color of active dot */
+}
