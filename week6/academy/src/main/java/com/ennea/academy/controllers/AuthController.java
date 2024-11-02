@@ -5,6 +5,7 @@ import com.ennea.academy.dtos.JwtDto;
 import com.ennea.academy.dtos.SignInDto;
 import com.ennea.academy.dtos.SignUpDto;
 import com.ennea.academy.entities.User;
+import com.ennea.academy.repositories.UserRepository;
 import com.ennea.academy.services.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
+
     @Autowired
     private AuthService service;
     @Autowired
@@ -38,6 +41,8 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<?> signIn(@RequestBody @Valid SignInDto data) {
         try {
+            User user = service.findUserByUsernameOrEmail(data.login());
+            if (user == null) throw new BadCredentialsException("User not found");
             var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
             var authUser = authenticationManager.authenticate(usernamePassword);
             var accessToken = tokenService.generateAccessToken((User) authUser.getPrincipal());

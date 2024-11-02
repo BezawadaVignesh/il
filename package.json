@@ -9,6 +9,8 @@
     "week3": "cd week3 && vite",
     "week4": "cd week4 && vite",
     "week5": "cd week5 && vite",
+    "week6:test": "cd .\\week6\\academy && gradlew.bat test && cd ..",
+    "week6": "cd .\\week6\\academy && gradlew.bat bootRun && cd ..",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
