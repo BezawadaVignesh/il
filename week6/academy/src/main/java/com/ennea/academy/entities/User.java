@@ -2,18 +2,9 @@ package com.ennea.academy.entities;
 
 import com.ennea.academy.enums.UserRole;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -36,6 +27,8 @@ public class User implements UserDetails {
 
     private String login;
 
+    private String email;
+
     private String password;
 
     public String getPassword() {
@@ -45,8 +38,22 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    public User(String login, String password, UserRole role) {
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Enrollment> enrollments;
+
+    public List<Course> getCourses() {
+        return enrollments.stream()
+                .map(Enrollment::getCourse)
+                .toList();
+    }
+
+    public boolean hasCourse(Long courseId) {
+        return enrollments.stream().anyMatch(enrollment -> enrollment.getCourse().getId().equals(courseId));
+    }
+
+    public User(String login, String email, String password, UserRole role) {
         this.login = login;
+        this.email = email;
         this.password = password;
         this.role = role;
     }
@@ -54,7 +61,16 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.role == UserRole.ADMIN) {
-            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+            return List.of(
+                    new SimpleGrantedAuthority("ROLE_ADMIN"),
+                    new SimpleGrantedAuthority("ROLE_USER"),
+                    new SimpleGrantedAuthority("ROLE_INSTRUCTOR")
+            );
+        } else if (this.role == UserRole.INSTRUCTOR) {
+            return List.of(
+                    new SimpleGrantedAuthority("ROLE_INSTRUCTOR"),
+                    new SimpleGrantedAuthority("ROLE_USER")
+            );
         }
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
@@ -63,6 +79,7 @@ public class User implements UserDetails {
     public String getUsername() {
         return login;
     }
+
 
     @Override
     public boolean isAccountNonExpired() {
